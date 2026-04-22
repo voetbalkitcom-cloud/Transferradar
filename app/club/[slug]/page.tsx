@@ -22,7 +22,13 @@ export default async function ClubPage({ params }: { params: Promise<{ slug: str
           <div className="clubHeroTop" style={{ background: `linear-gradient(135deg, ${club.primary_color || '#0f172a'}, #0f172a)` }}>
             <div className="row between start wrap gap16">
               <div className="row gap16 start">
-                <LogoBadge name={club.name} shortCode={club.short_code} logoPath={club.logo_path} primaryColor={club.primary_color} size={84} />
+                <LogoBadge
+  name={club.name}
+  shortCode={club.short_code}
+  logoPath={club.logo_path || undefined}
+  primaryColor={club.primary_color || undefined}
+  size={84}
+/>
                 <div>
                   <Badge tone="dark">{club.league}</Badge>
                   <div className="titleXl" style={{ marginTop: 10 }}>{club.name}</div>
