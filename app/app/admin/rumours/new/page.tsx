@@ -39,7 +39,12 @@ export default function NewRumourPage() {
         .select('id, name')
         .order('name');
 
-      if (!error && data) setClubs(data);
+      if (error) {
+        setMessage(`Clubs laden mislukt: ${error.message}`);
+        return;
+      }
+
+      setClubs(data || []);
     }
 
     loadClubs();
@@ -54,16 +59,14 @@ export default function NewRumourPage() {
     setLoading(true);
     setMessage('');
 
-    const toClubsArray = form.to_clubs
-      .split(',')
-      .map((x) => x.trim())
-      .filter(Boolean);
-
     const payload = {
       club_id: form.club_id,
       player_name: form.player_name,
       from_club: form.from_club,
-      to_clubs: toClubsArray,
+      to_clubs: form.to_clubs
+        .split(',')
+        .map((x) => x.trim())
+        .filter(Boolean),
       status: form.status,
       reliability: form.reliability,
       source_name: form.source_name,
@@ -76,7 +79,7 @@ export default function NewRumourPage() {
     const { error } = await supabase.from('rumours').insert(payload);
 
     if (error) {
-      setMessage(`Fout: ${error.message}`);
+      setMessage(`Opslaan mislukt: ${error.message}`);
     } else {
       setMessage('Gerucht succesvol opgeslagen.');
       setForm({
@@ -100,7 +103,7 @@ export default function NewRumourPage() {
   return (
     <main style={{ maxWidth: 900, margin: '40px auto', padding: '0 20px' }}>
       <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 24 }}>
-        Nieuw gerucht toevoegen
+        Gerucht toevoegen
       </h1>
 
       <form onSubmit={handleSubmit} style={{ display: 'grid', gap: 16 }}>
@@ -122,7 +125,7 @@ export default function NewRumourPage() {
         </label>
 
         <label>
-          Spelernaam
+          Speler naam
           <input
             value={form.player_name}
             onChange={(e) => updateField('player_name', e.target.value)}
@@ -142,7 +145,7 @@ export default function NewRumourPage() {
         </label>
 
         <label>
-          Naar clubs
+          Naar clubs (gescheiden door komma’s)
           <input
             value={form.to_clubs}
             onChange={(e) => updateField('to_clubs', e.target.value)}
@@ -181,7 +184,7 @@ export default function NewRumourPage() {
         </label>
 
         <label>
-          Bronnaam
+          Bron naam
           <input
             value={form.source_name}
             onChange={(e) => updateField('source_name', e.target.value)}
@@ -191,7 +194,7 @@ export default function NewRumourPage() {
         </label>
 
         <label>
-          Bronlink
+          Bron URL
           <input
             value={form.source_url}
             onChange={(e) => updateField('source_url', e.target.value)}
@@ -201,7 +204,7 @@ export default function NewRumourPage() {
         </label>
 
         <label>
-          Samenvatting
+          Korte samenvatting
           <textarea
             value={form.summary}
             onChange={(e) => updateField('summary', e.target.value)}
@@ -212,7 +215,7 @@ export default function NewRumourPage() {
         </label>
 
         <label>
-          Volledige tekst
+          Volledige toelichting
           <textarea
             value={form.body}
             onChange={(e) => updateField('body', e.target.value)}
@@ -244,7 +247,7 @@ export default function NewRumourPage() {
             cursor: 'pointer',
           }}
         >
-          {loading ? 'Opslaan...' : 'Gerucht opslaan'}
+          {loading ? 'Opslaan...' : 'Gerucht publiceren'}
         </button>
 
         {message && (
