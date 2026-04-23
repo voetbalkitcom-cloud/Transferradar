@@ -1,36 +1,98 @@
-import Link from 'next/link';
-import { MessageSquare, ThumbsUp } from 'lucide-react';
-import { Rumour, Club } from '@/lib/types';
-import Badge from './Badge';
+import Badge from '@/components/Badge';
+import LogoBadge from '@/components/LogoBadge';
 
-export default function RumourCard({ rumour, club, compact = false }: { rumour: Rumour; club: Club; compact?: boolean }) {
-  const tone = rumour.status === 'Bevestigd' ? 'success' : rumour.status === 'Bijna rond' ? 'warning' : rumour.status === 'Afgeketst' ? 'danger' : 'neutral';
+type RumourCardProps = {
+  rumour: {
+    id: string;
+    player_name: string;
+    from_club: string;
+    to_clubs: string[];
+    status: string;
+    reliability: string;
+    source_name?: string | null;
+    source_url?: string | null;
+    summary: string;
+    body?: string | null;
+    featured?: boolean;
+    score: number;
+    comments_count: number;
+  };
+  club: {
+    name: string;
+    short_code?: string | null;
+    logo_path?: string | null;
+    primary_color?: string | null;
+  };
+};
+
+function getReliabilityTone(value: string) {
+  if (value === 'Hoog') return 'success';
+  if (value === 'Laag') return 'danger';
+  return 'neutral';
+}
+
+export default function RumourCard({ rumour, club }: RumourCardProps) {
   return (
-    <div className="card rumourCard">
-      <div className="row between start gap16 wrap">
-        <div>
-          <div className="row gap8 wrap">
-            <Badge tone={tone}>{rumour.status}</Badge>
-            {rumour.featured ? <Badge tone="dark">Uitgelicht</Badge> : null}
-          </div>
-          <div className={compact ? 'titleMd' : 'titleLg'}>{rumour.player_name}</div>
-          <div className="mutedText">{club.name} • {rumour.from_club} → {rumour.to_clubs.join(', ')}</div>
+    <article className="premiumRumourCard">
+      <div className="premiumRumourTop">
+        <div className="row gap12 center wrap">
+          <Badge tone="dark">{rumour.status}</Badge>
+          <Badge tone={getReliabilityTone(rumour.reliability)}>
+            {rumour.reliability}
+          </Badge>
+          {rumour.featured ? <Badge tone="warning">Uitgelicht</Badge> : null}
         </div>
-        {!compact ? (
-          <div className="sourceBox">
-            <div className="eyebrow">Bron</div>
-            <div className="titleXs">{rumour.source_name}</div>
+
+        <div className="premiumRumourMetrics">
+          <div className="premiumRumourMetric">Score {rumour.score}</div>
+          <div className="premiumRumourMetric">{rumour.comments_count} reacties</div>
+        </div>
+      </div>
+
+      <div className="premiumRumourBody">
+        <div className="premiumRumourClub">
+          <LogoBadge
+            name={club.name}
+            shortCode={club.short_code}
+            logoPath={club.logo_path}
+            primaryColor={club.primary_color}
+            size={60}
+          />
+          <div>
+            <div className="premiumRumourClubName">{club.name}</div>
+            <div className="premiumRumourMetaLine">
+              {rumour.from_club} → {rumour.to_clubs.join(', ')}
+            </div>
           </div>
+        </div>
+
+        <h3 className="premiumRumourTitle">{rumour.player_name}</h3>
+        <p className="premiumRumourSummary">{rumour.summary}</p>
+
+        {rumour.body ? (
+          <div className="premiumRumourDetail">{rumour.body}</div>
         ) : null}
       </div>
-      <p className="bodyText">{rumour.summary}</p>
-      <div className="row between center wrap topBorder">
-        <div className="row gap8 wrap">
-          <span className="metric"><ThumbsUp size={16} /> {rumour.score}</span>
-          <span className="metric"><MessageSquare size={16} /> {rumour.comments_count}</span>
+
+      <div className="premiumRumourFooter">
+        <div className="premiumRumourSource">
+          <div className="premiumRumourSourceLabel">Bron</div>
+          <div className="premiumRumourSourceName">
+            {rumour.source_name || 'Onbekend'}
+          </div>
         </div>
-        <Link href={`/club/${club.slug}#${rumour.id}`} className="button button-dark">Bekijk</Link>
+
+        {rumour.source_url ? (
+          <a
+            href={rumour.source_url}
+            target="_blank"
+            rel="noreferrer"
+            className="premiumRumourLink"
+          >
+            Open bron
+          </a>
+        ) : null}
       </div>
-    </div>
+    </article>
   );
 }
