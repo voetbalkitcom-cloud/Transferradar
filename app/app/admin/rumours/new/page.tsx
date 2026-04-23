@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 
 const supabase = createClient(
@@ -14,9 +15,11 @@ type Club = {
 };
 
 export default function NewRumourPage() {
+  const router = useRouter();
   const [clubs, setClubs] = useState<Club[]>([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const [checkedAuth, setCheckedAuth] = useState(false);
 
   const [form, setForm] = useState({
     club_id: '',
@@ -33,7 +36,16 @@ export default function NewRumourPage() {
   });
 
   useEffect(() => {
-    async function loadClubs() {
+    async function init() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user || user.email !== 'voetbalkit.com@gmail.com') {
+        router.replace('/login');
+        return;
+      }
+
       const { data, error } = await supabase
         .from('clubs')
         .select('id, name')
@@ -41,14 +53,15 @@ export default function NewRumourPage() {
 
       if (error) {
         setMessage(`Clubs laden mislukt: ${error.message}`);
-        return;
+      } else {
+        setClubs(data || []);
       }
 
-      setClubs(data || []);
+      setCheckedAuth(true);
     }
 
-    loadClubs();
-  }, []);
+    init();
+  }, [router]);
 
   function updateField(name: string, value: string | boolean) {
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -98,6 +111,10 @@ export default function NewRumourPage() {
     }
 
     setLoading(false);
+  }
+
+  if (!checkedAuth) {
+    return <main style={{ padding: 40 }}>Controleren...</main>;
   }
 
   return (
