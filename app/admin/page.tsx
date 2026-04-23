@@ -1,38 +1,67 @@
-import { Bell, LayoutGrid, MessageSquare, Settings, Upload } from 'lucide-react';
-import AdminSidebar from '@/components/AdminSidebar';
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { createClient } from '@supabase/supabase-js';
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function AdminPage() {
+  const router = useRouter();
+  const [checking, setChecking] = useState(true);
+  const [email, setEmail] = useState('');
+
+  useEffect(() => {
+    async function checkUser() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user || user.email !== 'voetbalkit.com@gmail.com') {
+        router.replace('/login');
+        return;
+      }
+
+      setEmail(user.email || '');
+      setChecking(false);
+    }
+
+    checkUser();
+  }, [router]);
+
+  if (checking) {
+    return <main style={{ padding: 40 }}>Controleren...</main>;
+  }
+
   return (
-    <main className="page">
-      <div className="container adminGrid">
-        <AdminSidebar />
-        <section className="grid">
-          <div className="card">
-            <div className="titleLg">Backend dashboard</div>
-            <div className="mutedText">Alles wat je nodig hebt om live te gaan: clubs beheren, geruchten plaatsen, reacties modereren en instellingen klaarzetten.</div>
-          </div>
-          <div className="grid grid-3">
-            <div className="card"><LayoutGrid size={18} /><div className="titleSm" style={{ marginTop: 10 }}>Clubs</div><div className="mutedText">Voeg clubs toe, wijzig logo’s, stadium, beheerder en zichtbaarheid.</div></div>
-            <div className="card"><Upload size={18} /><div className="titleSm" style={{ marginTop: 10 }}>Geruchten</div><div className="mutedText">Maak nieuwe geruchten aan en zet ze direct live of laat ze reviewen.</div></div>
-            <div className="card"><MessageSquare size={18} /><div className="titleSm" style={{ marginTop: 10 }}>Reacties</div><div className="mutedText">Ruim reacties op, verwijder spam en houd kwaliteit hoog.</div></div>
-          </div>
-          <div className="grid grid-2">
-            <div className="card">
-              <div className="titleMd">Taken voor livegang</div>
-              <div className="grid">
-                <div className="subCard">1. Vul `.env` met Supabase-gegevens.</div>
-                <div className="subCard">2. Draai `supabase/schema.sql` in je project.</div>
-                <div className="subCard">3. Upload logo’s in `public/logos/eredivisie` en `public/logos/kkd`.</div>
-                <div className="subCard">4. Deploy op Vercel en koppel `transferradar.nl`.</div>
-              </div>
-            </div>
-            <div className="card">
-              <div className="titleMd">Wat nog gekoppeld moet worden</div>
-              <div className="mutedText">De codebase is klaar, maar voor echte multi-user livegang moeten login, database en storage met jouw Supabase-project worden verbonden.</div>
-              <div className="footerNote">Dat is bewust het enige stuk dat niet hardcoded is, omdat jouw keys en domeininstellingen nodig zijn.</div>
-            </div>
-          </div>
-        </section>
+    <main style={{ maxWidth: 900, margin: '40px auto', padding: '0 20px' }}>
+      <h1 style={{ fontSize: 32, fontWeight: 800 }}>Backend dashboard</h1>
+      <p style={{ marginTop: 16 }}>Ingelogd als: {email}</p>
+
+      <div style={{ marginTop: 24, display: 'grid', gap: 12 }}>
+        <a href="/admin/rumours/new">Ga naar gerucht toevoegen</a>
+        <button
+          onClick={async () => {
+            await supabase.auth.signOut();
+            router.push('/login');
+            router.refresh();
+          }}
+          style={{
+            width: 180,
+            padding: 12,
+            background: '#071633',
+            color: '#fff',
+            border: 'none',
+            borderRadius: 10,
+            cursor: 'pointer',
+            fontWeight: 700,
+          }}
+        >
+          Uitloggen
+        </button>
       </div>
     </main>
   );
