@@ -4,5 +4,5 @@ type Props = {
 };
 
 export default function Badge({ children, tone = 'neutral' }: Props) {
-  return <span className={`badge badge-${tone}`}>{children}</span>;
+  return <span className={`premiumBadge premiumBadge-${tone}`}>{children}</span>;
 }
