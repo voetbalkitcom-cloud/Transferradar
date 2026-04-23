@@ -38,7 +38,7 @@ export default function RumourCard({ rumour, club }: RumourCardProps) {
         <div className="row gap12 center wrap">
           <Badge tone="dark">{rumour.status}</Badge>
           <Badge tone={getReliabilityTone(rumour.reliability)}>
-            {rumour.reliability}
+            Betrouwbaarheid: {rumour.reliability}
           </Badge>
           {rumour.featured ? <Badge tone="warning">Uitgelicht</Badge> : null}
         </div>
