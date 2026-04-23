@@ -1974,3 +1974,68 @@ html[data-theme="dark"] .premiumBadge-danger {
 .premiumRumourLink:hover {
   transform: translateY(-1px);
 }
+.newHome {
+  background: #0b1220;
+  color: white;
+  min-height: 100vh;
+  padding: 60px 20px;
+}
+
+.hero {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #1e293b, #1d4ed8);
+}
+
+.heroInner h1 {
+  font-size: 72px;
+  font-weight: 900;
+  margin: 0;
+}
+
+.heroInner p {
+  margin-top: 20px;
+  font-size: 20px;
+  opacity: 0.8;
+}
+
+.actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 12px;
+}
+
+.btn {
+  padding: 14px 22px;
+  border-radius: 14px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+}
+
+.btn.primary {
+  background: white;
+  color: black;
+}
+
+.btn.ghost {
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
+  color: white;
+}
+
+.cards {
+  max-width: 1100px;
+  margin: 40px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  border-radius: 20px;
+  padding: 24px;
+}
