@@ -71,7 +71,7 @@ export default function SiteHeader() {
           </div>
           <div>
             <div className="brandTitle">Transferradar</div>
-            <div className="brandSub">Alle transfergeruchten per club</div>
+            <div className="brandSub">Transfer intelligence per club</div>
           </div>
         </Link>
 
