@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
+import { Flame, LockKeyhole, Mail } from 'lucide-react';
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -32,89 +33,74 @@ export default function LoginPage() {
       return;
     }
 
-    setMessage('Ingelogd. Doorsturen...');
     router.push('/admin');
     router.refresh();
   }
 
   return (
-    <main style={{ maxWidth: 520, margin: '60px auto', padding: '0 20px' }}>
-      <div
-        style={{
-          border: '1px solid #d9dee7',
-          borderRadius: 24,
-          background: '#fff',
-          padding: 28,
-        }}
-      >
-        <h1 style={{ fontSize: 32, fontWeight: 800, marginBottom: 8 }}>
-          Inloggen
-        </h1>
-        <p style={{ marginBottom: 24, color: '#64748b' }}>
-          Log in met je e-mailadres en wachtwoord om de backend te openen.
-        </p>
+    <main className="page premiumPage">
+      <div className="container">
+        <div className="premiumAuthWrap">
+          <section className="premiumAuthPanel">
+            <div className="premiumAuthGlow" />
 
-        <form onSubmit={handleLogin} style={{ display: 'grid', gap: 16 }}>
-          <input
-            type="email"
-            placeholder="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            style={{
-              width: '100%',
-              padding: 14,
-              borderRadius: 12,
-              border: '1px solid #cfd8e3',
-              fontSize: 16,
-            }}
-          />
-
-          <input
-            type="password"
-            placeholder="Wachtwoord"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            style={{
-              width: '100%',
-              padding: 14,
-              borderRadius: 12,
-              border: '1px solid #cfd8e3',
-              fontSize: 16,
-            }}
-          />
-
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              padding: 14,
-              background: '#071633',
-              color: 'white',
-              border: 'none',
-              borderRadius: 14,
-              fontWeight: 700,
-              fontSize: 18,
-              cursor: 'pointer',
-            }}
-          >
-            {loading ? 'Bezig...' : 'Inloggen'}
-          </button>
-
-          {message && (
-            <div
-              style={{
-                padding: 12,
-                background: '#f3f4f6',
-                borderRadius: 10,
-                color: '#111827',
-              }}
-            >
-              {message}
+            <div className="premiumAuthIcon">
+              <Flame size={18} />
             </div>
-          )}
-        </form>
+
+            <div className="premiumEyebrow" style={{ marginTop: 18 }}>
+              Admin login
+            </div>
+
+            <h1 className="premiumAuthTitle">Inloggen</h1>
+            <p className="premiumAuthText">
+              Log in met je e-mailadres en wachtwoord om de backend en
+              publicatiefuncties te openen.
+            </p>
+
+            <form onSubmit={handleLogin} className="premiumForm" style={{ marginTop: 24 }}>
+              <label className="premiumField">
+                <span className="premiumFieldLabel">E-mail</span>
+                <div className="premiumInputWrap">
+                  <Mail size={16} className="premiumInputIcon" />
+                  <input
+                    type="email"
+                    className="premiumInput premiumInputWithIcon"
+                    placeholder="jij@club.nl"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </label>
+
+              <label className="premiumField">
+                <span className="premiumFieldLabel">Wachtwoord</span>
+                <div className="premiumInputWrap">
+                  <LockKeyhole size={16} className="premiumInputIcon" />
+                  <input
+                    type="password"
+                    className="premiumInput premiumInputWithIcon"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                </div>
+              </label>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="premiumButton premiumButtonDarkFull"
+              >
+                {loading ? 'Bezig...' : 'Inloggen'}
+              </button>
+
+              {message && <div className="premiumMessage">{message}</div>}
+            </form>
+          </section>
+        </div>
       </div>
     </main>
   );
