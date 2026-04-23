@@ -1,8 +1,8 @@
 import Image from 'next/image';
 
-type Props = {
+type LogoBadgeProps = {
   name: string;
-  shortCode: string;
+  shortCode?: string | null;
   logoPath?: string | null;
   primaryColor?: string | null;
   size?: number;
@@ -13,28 +13,34 @@ export default function LogoBadge({
   shortCode,
   logoPath,
   primaryColor,
-  size = 52,
-}: Props) {
-  const safeLogoPath = logoPath ?? undefined;
-  const safePrimaryColor = primaryColor ?? '#111827';
+  size = 56,
+}: LogoBadgeProps) {
+  const fallback = shortCode || name.slice(0, 3).toUpperCase();
 
   return (
     <div
-      style={{ width: size, height: size }}
-      className="logoBadge"
-      aria-label={`${name} logo`}
+      className="premiumLogoBadge"
+      style={{
+        width: size,
+        height: size,
+      }}
     >
-      {safeLogoPath ? (
+      {logoPath ? (
         <Image
-          src={safeLogoPath}
+          src={logoPath}
           alt={`${name} logo`}
           width={size}
           height={size}
-          className="logoImage"
+          className="premiumLogoImage"
         />
       ) : (
-        <div className="logoFallback" style={{ background: safePrimaryColor }}>
-          {shortCode}
+        <div
+          className="premiumLogoFallback"
+          style={{
+            background: primaryColor || '#0f172a',
+          }}
+        >
+          {fallback}
         </div>
       )}
     </div>
